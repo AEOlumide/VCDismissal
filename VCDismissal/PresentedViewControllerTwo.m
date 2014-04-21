@@ -7,6 +7,7 @@
 //
 
 #import "PresentedViewControllerTwo.h"
+#import "PushedViewController.h"
 
 @interface PresentedViewControllerTwo ()
 
@@ -14,36 +15,24 @@
 
 @implementation PresentedViewControllerTwo
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.title = @"Destination";
+    DLog(@"view did load");
+
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)dismissButtonTapped:(id)sender {
+    DLog(@"Dismiss Button tapped");
+    [[NSNotificationCenter defaultCenter] postNotificationName:DISMISS_NOTIFICATION object:self];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    DLog(@"dismissing...");
 }
 
-/*
-#pragma mark - Navigation
+- (IBAction)pushButtonTapped:(id)sender {
+    PushedViewController *pushedVC = [[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"PushedViewController"];
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    [self.navigationController pushViewController:pushedVC animated:YES];
 }
-*/
-
 @end

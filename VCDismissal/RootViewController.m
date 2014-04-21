@@ -7,6 +7,7 @@
 //
 
 #import "RootViewController.h"
+#import "PresentedViewController.h"
 
 @interface RootViewController ()
 
@@ -14,36 +15,19 @@
 
 @implementation RootViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    DLog(@"view did load");
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)presentButtonTapped:(id)sender {
+    DLog(@"present button tapped");
+    
+    PresentedViewController *presentedVC = [[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"PresentedViewController"];
+    UINavigationController *navigationRef = [[UINavigationController alloc] initWithRootViewController:presentedVC];
+    navigationRef.navigationBarHidden = YES;
+    [self.navigationController presentViewController:navigationRef animated:YES completion:nil];
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

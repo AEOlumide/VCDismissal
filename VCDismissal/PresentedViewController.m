@@ -7,43 +7,53 @@
 //
 
 #import "PresentedViewController.h"
+#import "PushedViewController.h"
 
 @interface PresentedViewController ()
-
+@property (nonatomic, assign) BOOL receiveDismissdNotif;
 @end
 
 @implementation PresentedViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    DLog(@"view loaded");
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissAllViewControllers) name:DISMISS_NOTIFICATION object:nil];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBarHidden = YES;
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.receiveDismissdNotif) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
-*/
+
+- (IBAction)pushButtonTapped:(id)sender {
+    DLog(@"push button tapped");
+    PushedViewController *pushedVC = [[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"PushedViewController"];
+    [self.navigationController pushViewController:pushedVC animated:YES];
+}
+
+- (IBAction)dismissButtonTapped:(id)sender {
+    DLog(@"dismiss button tapped");
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)dismissAllViewControllers {
+    DLog(@"dismissing...");
+//    [self dismissViewControllerAnimated:YES completion:nil];
+    self.receiveDismissdNotif = YES;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

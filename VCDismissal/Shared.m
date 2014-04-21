@@ -8,6 +8,4 @@
 
 #import "Shared.h"
 
-@implementation Shared
-
-@end
+NSString* const DISMISS_NOTIFICATION = @"DISMISS_NOTIF";

@@ -7,6 +7,7 @@
 //
 
 #import "PushedViewController.h"
+#import "PresentedViewControllerTwo.h"
 
 @interface PushedViewController ()
 
@@ -14,36 +15,54 @@
 
 @implementation PushedViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.navigationController.navigationBarHidden = NO;
+    self.title = @"Pushed View Controller";
+    DLog(@"view did load");
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissAllViewControllers) name:DISMISS_NOTIFICATION object:nil];
+    
+    NSLog(@"view controlller stack %@",self.navigationController.viewControllers);
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)presentButtonTapped:(id)sender {
+    DLog(@"present button tapped");
+    
+    if ([self isPresentedTwoInStack]) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        PresentedViewControllerTwo *presentedVCTwo = [[UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"PresentedViewControllerTwo"];
+        UINavigationController *navigationRef = [[UINavigationController alloc] initWithRootViewController:presentedVCTwo];
+        navigationRef.navigationBarHidden = NO;
+        [self.navigationController presentViewController:navigationRef animated:YES completion:nil];
+    }
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (BOOL)isPresentedTwoInStack {
+    
+    for (UIViewController *controller in self.navigationController.viewControllers) {
+        if ([controller isKindOfClass:[PresentedViewControllerTwo class]]) {
+            return YES;
+        }
+    }
+    return NO;
 }
-*/
 
+- (void)dismissAllViewControllers {
+    DLog(@"dismissing...");
+    [self.navigationController popViewControllerAnimated:NO];
+}
+
+
+//Is it modal?
+- (BOOL)isModal {
+    return self.presentingViewController.presentedViewController == self
+    || self.navigationController.presentingViewController.presentedViewController == self.navigationController
+    || [self.tabBarController.presentingViewController isKindOfClass:[UITabBarController class]];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 @end
